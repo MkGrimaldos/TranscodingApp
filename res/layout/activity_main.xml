@@ -12,15 +12,52 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/transcodeButton"
+        <RadioGroup
+            android:id="@+id/RadioLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="98dp"
-            android:text="@string/transcode"
-            android:onClick="transcode" />
+            android:layout_marginTop="40dp" >
+
+            <RadioButton
+                android:id="@+id/deviceRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/onDevice" />
+
+            <RadioButton
+                android:id="@+id/serverRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/onServer" />
+
+            <RadioButton
+                android:id="@+id/autoRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/auto" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/transcodeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/RadioLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:onClick="transcode"
+            android:text="@string/transcode" />
+
+        <TextView
+            android:id="@+id/infoTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/transcodeButton"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="48dp"
+            android:text=" " />
 
     </RelativeLayout>
 

@@ -4,5 +4,8 @@
     <string name="app_name">TranscodingApp</string>
     <string name="hello_world">Hello world!</string>
     <string name="transcode">Transcode!</string>
+    <string name="onDevice">Transcode on Device</string>
+    <string name="onServer">Transcode on Server</string>
+    <string name="auto">Let the mobile decide</string>
 
 </resources>
