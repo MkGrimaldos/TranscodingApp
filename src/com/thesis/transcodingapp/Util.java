@@ -22,6 +22,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.util.Log;
 
 public class Util {
+	
+	final static String IP = "138.250.194.200";
+	final static int PORT = 8888;
 
 	public static void receiveFile(String path) {
 		Socket socket = null;
@@ -34,7 +37,7 @@ public class Util {
 		try {
 			Log.d("DebugTag", "Connecting...");
 
-			socket = new Socket("138.250.194.200", 8888);
+			socket = new Socket(IP, PORT);
 
 			Log.d("DebugTag", "Connected");
 
@@ -105,7 +108,7 @@ public class Util {
 		try {
 			Log.d("DebugTag", "Connecting...");
 
-			socket = new Socket("138.250.194.200", 8888);
+			socket = new Socket(IP, PORT);
 
 			Log.d("DebugTag", "Connected");
 
@@ -140,7 +143,7 @@ public class Util {
 			// Receiving
 			Log.d("DebugTag", "Connecting...");
 
-			socket = new Socket("138.250.194.200", 8888);
+			socket = new Socket(IP, PORT);
 
 			Log.d("DebugTag", "Connected");
 
