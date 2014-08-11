@@ -1,27 +1,10 @@
 package com.thesis.transcodingapp;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.Calendar;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.BufferedHttpEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -29,7 +12,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-//import com.thesis.offloadinglibrary.Util;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -122,30 +104,27 @@ public class MainActivity extends Activity {
 
 			new TranscodingTask().execute(
 					Environment.getExternalStorageDirectory() + "/source.mp4",
-					Environment.getExternalStorageDirectory() + "/target.avi");// .get();
+					Environment.getExternalStorageDirectory() + "/target.avi");
 		} else if (server.isChecked()) {
-			info.setText("Transcoding on Server!"); // Sending petition, etc
+			info.setText("Transcoding on Server!");
 			switch (OPTION) {
 			case 1:
 				// The server already has the file
 				new ReceiveTask().execute(Environment
-						.getExternalStorageDirectory().getAbsolutePath());// Long.toString(beginning));
-				// new Util().receiveFile(beginning);
+						.getExternalStorageDirectory().getAbsolutePath());
 				break;
 			case 2:
 				// The device needs to send the file to the server
 				new SendReceiveTask().execute(Environment
 						.getExternalStorageDirectory().getAbsolutePath());
-				// new Util().sendReceiveFile(beginning);
 				break;
 			default:
 				break;
 			}
 
 		} else if (auto.isChecked()) {
-			new AutoDecideTask().execute(
-					Environment.getExternalStorageDirectory() + "/source.mp4",
-					Environment.getExternalStorageDirectory() + "/target.avi");
+			new AutoDecideTask().execute(Environment
+					.getExternalStorageDirectory().getAbsolutePath());
 		}
 	}
 
@@ -220,85 +199,7 @@ public class MainActivity extends Activity {
 
 		@Override
 		protected Integer doInBackground(String... params) {
-			// new Util().receiveFile(params[0]);
-
-			Socket socket = null;
-			DataOutputStream dataOutputStream = null;
-			DataInputStream dataInputStream = null;
-			OutputStream output = null;
-
-			// Log.d("DebugTag", "Button clicked, still not connection...");
-
-			try {
-				// Log.d("DebugTag", "Connecting...");
-
-				socket = new Socket("138.250.194.200", 8888);
-
-				// Log.d("DebugTag", "Connected");
-
-				int bufferSize = 0;
-
-				// Log.d("DebugTag", "Receiving data...");
-
-				bufferSize = socket.getReceiveBufferSize();
-				dataInputStream = new DataInputStream(socket.getInputStream());
-				String fileName = dataInputStream.readUTF();
-				// Log.d("DebugTag", fileName);
-				output = new FileOutputStream(
-				/* Environment.getExternalStorageDirectory() */params[0] + "/"
-						+ fileName);
-				byte[] buffer = new byte[bufferSize];
-				int count;
-				while ((count = dataInputStream.read(buffer)) > 0) {
-					//System.out.println(count);
-					output.write(buffer, 0, count);
-				}
-
-				// Log.d("DebugTag", "Received");
-
-			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
-				if (socket != null) {
-					try {
-						socket.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-				if (dataOutputStream != null) {
-					try {
-						dataOutputStream.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-				if (dataInputStream != null) {
-					try {
-						dataInputStream.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-				if (output != null) {
-					try {
-						output.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
+			Util.receiveFile(params[0]);
 
 			return 1;// resul.toString();
 		}
@@ -326,7 +227,7 @@ public class MainActivity extends Activity {
 				e.printStackTrace();
 			}
 
-			System.out.println("This should appear at the very end.");
+			// System.out.println("This should appear at the very end.");
 
 			dialog.dismiss();
 		}
@@ -344,125 +245,7 @@ public class MainActivity extends Activity {
 
 		@Override
 		protected Integer doInBackground(String... params) {
-			// new Util().sendReceiveFile(params[0]);
-
-			Socket socket = null;
-			DataOutputStream dataOutputStream = null;
-			DataInputStream dataInputStream = null;
-			OutputStream output = null;
-
-			Log.d("DebugTag", "Button clicked, still not connection...");
-
-			try {
-				Log.d("DebugTag", "Connecting...");
-
-				socket = new Socket("138.250.194.200", 8888);
-
-				Log.d("DebugTag", "Connected");
-
-				// Sending
-				Log.d("DebugTag", "Sending data...");
-				File source = new File(
-						Environment.getExternalStorageDirectory()
-								+ "/source.mp4");
-
-				byte[] bufferSend = new byte[8192];
-				BufferedInputStream bis = new BufferedInputStream(
-						new FileInputStream(source));
-				dataInputStream = new DataInputStream(bis);
-
-				dataOutputStream = new DataOutputStream(
-						socket.getOutputStream());
-				dataOutputStream.writeUTF(source.getName());
-				int count;
-				while ((count = dataInputStream.read(bufferSend)) > 0) {
-					// System.out.println(count);
-					dataOutputStream.write(bufferSend, 0, count);
-				}
-
-				Log.d("DebugTag", "Sent");
-
-				Log.d("DebugTag", "Closing socket connection");
-
-				try {
-					socket.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				Log.d("DebugTag", "Socket connection closed");
-
-				// Receiving
-
-				Log.d("DebugTag", "Connecting...");
-
-				socket = new Socket("138.250.194.200", 8888);
-
-				Log.d("DebugTag", "Connected");
-
-				int bufferSize = 0;
-
-				Log.d("DebugTag", "Receiving data...");
-
-				bufferSize = socket.getReceiveBufferSize();
-				dataInputStream = new DataInputStream(socket.getInputStream());
-				String fileName = dataInputStream.readUTF();
-				Log.d("DebugTag", fileName);
-				output = new FileOutputStream(
-						Environment.getExternalStorageDirectory() + "/"
-								+ fileName);
-				byte[] bufferReceive = new byte[bufferSize];
-				// int count;
-				while ((count = dataInputStream.read(bufferReceive)) > 0) {
-					output.write(bufferReceive, 0, count);
-				}
-
-				Log.d("DebugTag", "Received");
-
-			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
-				if (socket != null) {
-					try {
-						socket.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-				if (dataOutputStream != null) {
-					try {
-						dataOutputStream.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-				if (dataInputStream != null) {
-					try {
-						dataInputStream.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-				if (output != null) {
-					try {
-						output.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
+			Util.sendReceiveFile(params[0]);
 
 			return 1;// resul.toString();
 		}
@@ -509,30 +292,7 @@ public class MainActivity extends Activity {
 
 		@Override
 		protected Integer doInBackground(String... params) {
-			// Time predicted depending on file size (in s/MB)
-			final double estimatedDeviceTranscodingSpMBPrediction = 3.604;
-			// Predicted speedup server/device
-			final double estimatedServerVideoTranscodingRatioPrediction = 0.2189;
-			// Predicted target.avi size reduction ratio
-			final double estimatedReductionTranscodeVideoSize = 0.2262;
-			// File size in MB
-			double fileSize = new File(params[0]).length()/1000000.0;
-			Log.d("DebugTag", "File size: " + fileSize);
-			// Bandwidth in KB/s
-			float bandwidth = getBandwidth()/1000.0f;
-			// Predicted execution time on device
-			double devicePerformancePrediction;
-			// Predicted execution time on server
-			double serverPerformancePrediction;
-
-			devicePerformancePrediction = estimatedDeviceTranscodingSpMBPrediction
-					* fileSize;
-
-			serverPerformancePrediction = (fileSize / bandwidth)
-					+ ((estimatedDeviceTranscodingSpMBPrediction * estimatedServerVideoTranscodingRatioPrediction) * fileSize)
-					+ ((fileSize * estimatedReductionTranscodeVideoSize) / bandwidth);
-			
-			if(devicePerformancePrediction < serverPerformancePrediction) {
+			if (Util.autoDecide(params[0])) {
 				return 1;
 			} else {
 				return 2;
@@ -543,12 +303,14 @@ public class MainActivity extends Activity {
 			TextView info = (TextView) findViewById(R.id.infoTextView);
 
 			dialog.dismiss();
-			
+
 			if (res == 1) {
 				info.setText("Transcoding on Device!");
 				new TranscodingTask().execute(
-						Environment.getExternalStorageDirectory() + "/source.mp4",
-						Environment.getExternalStorageDirectory() + "/target.avi");
+						Environment.getExternalStorageDirectory()
+								+ "/source.mp4",
+						Environment.getExternalStorageDirectory()
+								+ "/target.avi");
 			} else if (res == 2) {
 				info.setText("Transcoding on Server!"); // Sending petition, etc
 				switch (OPTION) {
@@ -570,51 +332,6 @@ public class MainActivity extends Activity {
 			}
 		}
 
-	}
-
-	private float getBandwidth() {
-		// Download your image
-		long startTime = System.nanoTime();
-		HttpGet httpRequest;
-		float bandwidth = -1;
-
-		try {
-			httpRequest = new HttpGet(
-					new URL(
-							"http://img3.wikia.nocookie.net/__cb20090802012207/aliens/images/1/19/Dilbert03.gif")
-							.toURI());
-
-			HttpClient httpClient = new DefaultHttpClient();
-			HttpResponse response;
-			response = (HttpResponse) httpClient.execute(httpRequest);
-			long endTime = System.nanoTime();
-
-			HttpEntity entity = response.getEntity();
-			BufferedHttpEntity bufHttpEntity;
-			bufHttpEntity = new BufferedHttpEntity(entity);
-
-			// You can re-check the size of your file
-			/* final */long contentLength = bufHttpEntity.getContentLength();
-
-			Log.d("DebugTag", "Size of the file: " + contentLength / 1000.0f
-					+ "KB");
-
-			// Log
-			Log.d("DebugTag", "[BENCHMARK] Dowload time: "
-					+ (endTime - startTime) + "ns");
-
-			// Bandwidth : size(KB)/time(s)
-			bandwidth = ((float) contentLength / (endTime - startTime)) * 1000000.0f;
-
-			Log.d("DebugTag", "Bandwidth: " + bandwidth + "KB/s");
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-
-		return bandwidth;
 	}
 
 	private void scanFile(String path) {
