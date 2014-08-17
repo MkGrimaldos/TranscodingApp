@@ -124,7 +124,7 @@ public class MainActivity extends Activity {
 
 		} else if (auto.isChecked()) {
 			new AutoDecideTask().execute(Environment
-					.getExternalStorageDirectory().getAbsolutePath());
+					.getExternalStorageDirectory() + "/source.mp4");
 		}
 	}
 

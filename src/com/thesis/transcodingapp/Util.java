@@ -204,11 +204,11 @@ public class Util {
 
 	public static boolean autoDecide(String path) {
 		// Time predicted depending on file size (in s/MB)
-		final double estimatedDeviceTranscodingSpMBPrediction = 3.604;
+		final double estimatedDeviceTranscodingSpMBPrediction = 4.112; //3.604;
 		// Predicted speedup server/device
-		final double estimatedServerVideoTranscodingRatioPrediction = 0.2189;
+		final double estimatedServerVideoTranscodingRatioPrediction = 0.2233; //0.2189;
 		// Predicted target.avi size reduction ratio
-		final double estimatedReductionTranscodeVideoSize = 0.2262;
+		final double estimatedReductionTranscodeVideoSize = 0.2046; //0.2262;
 		// File size in MB
 		double fileSize = new File(path).length() / 1000000.0;
 		Log.d("DebugTag", "File size: " + fileSize + "MB");
@@ -239,7 +239,10 @@ public class Util {
 		try {
 			httpRequest = new HttpGet(
 					new URL(
-							"http://img3.wikia.nocookie.net/__cb20090802012207/aliens/images/1/19/Dilbert03.gif")
+							// "http://theamericanceo.files.wordpress.com/2014/03/dilbertgoals1.jpg")
+							"http://static.businessinsider.com/image/525460146bb3f7962b2c9bc4/image.jpg")
+							//"http://media.npr.org/assets/img/2013/10/18/dilbert_custom-1753db19267dacbc24468f088770ef4893deea44.jpg")
+							//"http://img3.wikia.nocookie.net/__cb20090802012207/aliens/images/1/19/Dilbert03.gif")
 							.toURI());
 
 			HttpClient httpClient = new DefaultHttpClient();
